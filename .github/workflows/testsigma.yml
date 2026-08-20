@@ -1,8 +1,7 @@
 
 name: Testsigma Execution Report
 
-on:
-  workflow_dispatch:
+on: [workflow_dispatch]
 
 jobs:
   test:
