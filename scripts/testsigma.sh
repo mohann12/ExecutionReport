@@ -36,15 +36,18 @@ do
 
 if [ "$STATUS" = "SUCCESS" ]; then
     echo "Testsigma execution passed"
-    exit 0
+    FINAL_STATUS="$STATUS"
+    break
 
 elif [ "$STATUS" = "FAILURE" ]; then
     echo "Testsigma execution failed"
-    exit 1
+    FINAL_STATUS="$STATUS"
+    break
 
 elif [ "$STATUS" = "ABORTED" ] || [ "$STATUS" = "STOPPED" ]; then
     echo "Testsigma execution stopped: $STATUS"
-    exit 1
+    FINAL_STATUS="$STATUS"
+    break
 
 else
     echo "Test is still running. Waiting 10 seconds..."
@@ -53,6 +56,7 @@ fi
 
 done
 
+echo "Final Testsigma result: $FINAL_STATUS"
 
 
 echo
