@@ -58,6 +58,13 @@ done
 
 echo "Final Testsigma result: $FINAL_STATUS"
 
+# ==========================================
+# Wait for Testsigma result to be reflected in report
+# ==========================================
+
+echo
+echo "Waiting 10 seconds for Testsigma report data to be updated..."
+sleep 10
 
 # ==========================================
 # Generate PDF Report
