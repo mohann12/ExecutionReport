@@ -11,43 +11,73 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      # ==========================================
+      # Checkout Repository
+      # ==========================================
+
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      # ==========================================
+      # Run Testsigma
+      # ==========================================
 
       - name: Run Testsigma script
         run: bash scripts/testsigma.sh
         env:
           TESTSIGMA_API_KEY: ${{ secrets.TESTSIGMA_API_KEY }}
 
-      # Upload PDF as GitHub Actions artifact
-      - name: Upload Testsigma PDF Report
+      # ==========================================
+      # Upload PDF as GitHub Actions Artifact
+      # ==========================================
+
+      - name: Upload Testsigma PDF Reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: testsigma-execution-report
-          path: Reports/testsigma_execution_report.pdf
+          name: testsigma-execution-reports
+          path: Reports/*.pdf
           if-no-files-found: warn
 
-      # Commit PDF into Reports folder
-      - name: Commit Testsigma PDF Report
+      # ==========================================
+      # Commit PDF Reports to Repository
+      # ==========================================
+
+      - name: Commit Testsigma PDF Reports
         if: always()
         run: |
-          echo "Checking generated report..."
 
-          if [ -f "Reports/testsigma_execution_report.pdf" ]; then
-            echo "Report found. Committing to repository..."
+          echo "Checking generated reports..."
+
+          if compgen -G "Reports/*.pdf" > /dev/null; then
+
+            echo "Reports found:"
+            ls -lh Reports/*.pdf
+
+            echo
+            echo "Committing reports to repository..."
 
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-            git add Reports/testsigma_execution_report.pdf
+            git add Reports/*.pdf
 
             if git diff --cached --quiet; then
-              echo "No changes to commit."
+
+              echo "No new report changes to commit."
+
             else
-              git commit -m "Update Testsigma execution report"
+
+              git commit -m "Add Testsigma execution report"
+
               git push
+
             fi
+
           else
-            echo "Report file not found. Nothing to commit."
+
+            echo "No PDF reports found."
+            echo "Nothing to commit."
+
           fi
