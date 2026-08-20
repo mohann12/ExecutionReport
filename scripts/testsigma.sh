@@ -25,24 +25,30 @@ echo "Checking Testsigma execution status..."
 
 while true
 do
-  STATUS_RESPONSE=$(curl -s -X GET \
-    -H "Accept: application/json" \
-    -H "Authorization: Bearer $TESTSIGMA_API_KEY" \
-    "https://app.testsigma.com/api/v1/execution_results/$EXECUTION_ID")
+    STATUS_RESPONSE=$(curl -s -X GET \
+        -H "Accept: application/json" \
+        -H "Authorization: Bearer $TESTSIGMA_API_KEY" \
+        "https://app.testsigma.com/api/v1/execution_results/$EXECUTION_ID")
 
-  RESULT=$(echo "$STATUS_RESPONSE" | jq -r '.result')
+    STATUS=$(echo "$STATUS_RESPONSE" | jq -r '.result // .status')
 
-  echo "Current Testsigma status: $RESULT"
+    echo "Current Testsigma status: $STATUS"
 
-  if [ "$RESULT" = "PASSED" ] || [ "$RESULT" = "FAILED" ]; then
-    break
-  fi
+    if [ "$STATUS" = "SUCCESS" ]; then
+        echo "Testsigma execution passed"
+        exit 0
 
-  echo "Test is still running. Waiting 10 seconds..."
-  sleep 10
+    elif [ "$STATUS" = "FAILURE" ]; then
+        echo "Testsigma execution failed"
+        exit 1
+
+    else
+        echo "Test is still running. Waiting 10 seconds..."
+        sleep 10
+    fi
 done
 
-echo "Final Testsigma result: $RESULT"
+
 
 echo
 echo "Testsigma execution request completed"
