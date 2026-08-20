@@ -11,4 +11,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Testsigma script
+        env:
+          TESTSIGMA_API_KEY: ${{ secrets.TESTSIGMA_API_KEY }}
         run: bash scripts/testsigma.sh
