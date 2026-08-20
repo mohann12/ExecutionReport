@@ -34,18 +34,23 @@ do
 
     echo "Current Testsigma status: $STATUS"
 
-    if [ "$STATUS" = "SUCCESS" ]; then
-        echo "Testsigma execution passed"
-        exit 0
+if [ "$STATUS" = "SUCCESS" ]; then
+    echo "Testsigma execution passed"
+    exit 0
 
-    elif [ "$STATUS" = "FAILURE" ]; then
-        echo "Testsigma execution failed"
-        exit 1
+elif [ "$STATUS" = "FAILURE" ]; then
+    echo "Testsigma execution failed"
+    exit 1
 
-    else
-        echo "Test is still running. Waiting 10 seconds..."
-        sleep 10
-    fi
+elif [ "$STATUS" = "ABORTED" ] || [ "$STATUS" = "STOPPED" ]; then
+    echo "Testsigma execution stopped: $STATUS"
+    exit 1
+
+else
+    echo "Test is still running. Waiting 10 seconds..."
+    sleep 10
+fi
+
 done
 
 
