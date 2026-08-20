@@ -119,13 +119,24 @@ done
 echo
 echo "Downloading PDF report..."
 
+# Create Reports folder if it doesn't exist
+mkdir -p Reports
+
+REPORT_FILE="Reports/testsigma_execution_report.pdf"
+
 curl -s -L \
     -H "Authorization: Bearer $TESTSIGMA_API_KEY" \
     "$REPORT_URL" \
-    -o testsigma_execution_report.pdf
+    -o "$REPORT_FILE"
 
-echo "PDF report downloaded successfully:"
-echo "testsigma_execution_report.pdf"
+# Verify that the PDF was downloaded
+if [ -f "$REPORT_FILE" ] && [ -s "$REPORT_FILE" ]; then
+    echo "PDF report downloaded successfully:"
+    echo "$REPORT_FILE"
+else
+    echo "Failed to download PDF report"
+    exit 1
+fi
 
 
 # ==========================================
@@ -134,6 +145,7 @@ echo "testsigma_execution_report.pdf"
 
 echo
 echo "Testsigma execution request completed"
+echo "Report location: $REPORT_FILE"
 
 
 # Keep GitHub Actions status aligned with Test Plan result
